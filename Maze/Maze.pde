@@ -29,7 +29,11 @@ void draw(){
        if (val == 0){
          //temp down
          if (board[currI][currJ + 1] == 'B'){
-           board[currI + 1][currJ] = 'B';
+           int temp = currJ;
+           while (board[currI + 1][temp] == ' '){
+             temp--;
+           }
+           board[currI + 1][temp] = 'B';
          }
          else if (board[currI + 1][currJ] == 'B'){
            board[currI][currJ + 1] = 'B';
