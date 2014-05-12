@@ -11,7 +11,7 @@ int currJ;
 int direction = -1;
 void setup(){
   frameRate(10);
-  //port = new Serial(this, 9600);
+  port = new Serial(this, 9600);
   
   textSize(32);
   size(600, 600);
@@ -20,8 +20,8 @@ void setup(){
 }
 
 void draw(){
-  //if (0 < port.available()){
-    // val = port.read();
+  if (0 < port.available()){
+      val = port.read();
      if (board[currI][currJ+1] == 'G'){
        text("You Win!", 20, 20);
      }
