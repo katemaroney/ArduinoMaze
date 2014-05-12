@@ -4,8 +4,8 @@ int val;
 char [][] board;
 BufferedReader reader;
 int level = 1;
-int width;
-int height;
+int aWidth;
+int aHeight;
 int currI;
 int currJ;
 void setup(){
@@ -13,6 +13,8 @@ void setup(){
   //port = new Serial(this, 9600);
   createBoard();
   textSize(32);
+  size(600, 600);
+  background(255);
 }
 
 void draw(){
@@ -24,7 +26,7 @@ void draw(){
      else{
        if (val == 0){
          //move down - temp;
-         println("WOOOHOO");
+          ;
        }
          
      }  
@@ -45,16 +47,15 @@ void createBoard(){
      e.printStackTrace();
      line = null;
    }
-   width = Integer.parseInt(line);
+   aWidth = Integer.parseInt(line);
    try{
      line = reader.readLine();
    }catch(IOException e){
      e.printStackTrace();
      line = null;
    }
-   height = Integer.parseInt(line);
-   size(width, height);
-   board = new char[width][height];
+   aHeight = Integer.parseInt(line);
+   board = new char[aHeight][aWidth];
    int i = 0;
    try{
      line = reader.readLine();
@@ -63,9 +64,9 @@ void createBoard(){
      line = null;
    }
    while (line != null){
-     String [] pieces = split(line, "");
-     for (int j = 0; j < pieces.length; j++){
-       board[i][j] = pieces[j].charAt(0);
+     println(line);
+     for (int j = 0; j < board[0].length; j++){
+       board[i][j] = line.charAt(j);
      }
      i++;
      try{
@@ -76,9 +77,32 @@ void createBoard(){
      }
    }
    level++;
-   for (i = 0; i < board.length; i++){
-     for (int j = 0; j < board[i].length; j++){
-       text(board[i][j], i, j);
+   for (int k = 0; k < board.length; k++){
+     for (int j = 0; j < board[k].length; j++){
+       /* switch (board[k][j]){
+           case 'X':
+               fill(0, 0, 0);
+               break;
+           case ' ':
+               fill(255, 255, 255);
+               break;
+            case 'G':
+                fill(0, 255, 0);
+                break;
+            case 'P':
+                fill(255, 0, 0);
+                break;
+            case 'B':
+                fill(0, 0, 255);
+                break;
+            default:
+                fill(255, 255, 255);
+                break;
+        }*/
+        stroke(255, 255, 255);
+        println(width);
+       rect(j * width/aWidth, k * width/aWidth, width/aWidth, width/aWidth);
      }
+     println();
    }
 }
