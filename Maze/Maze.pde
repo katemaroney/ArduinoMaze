@@ -28,29 +28,48 @@ void draw(){
      else{
        if (val == 0){
          //temp down
-          while (board[currI][currJ - 1] == ' '){
-            board[currI][currJ] = ' ';
-            currJ = currJ - 1;
-          }
-          board[currI][currJ] = 'P';
+         if (board[currI][currJ + 1] == 'B'){
+           board[currI + 1][currJ] = 'B';
+         }
+         else if (board[currI + 1][currJ] == 'B'){
+           board[currI][currJ + 1] = 'B';
+         }
+         else {
+           ;
+         }
        }
        if (val == 1){
          //temp left
          direction = -1;
-         int temp = currJ
-         while (board[currI - 1][temp] == ' '){
-           board[currI][currJ] = ' ';
-           currI = currI - 1;
-           temp--;
+         int temp = currJ;
+         board[currI][currJ] = ' ';
+         while (currI > 0 && board[currI - 1][temp] == ' '){
+            temp--;
          }
+         currI = currI - 1;
+         currJ = temp + 1;
          board[currI][currJ] = 'P';
        }
        if (val == 2){
          //temp up
-         if (board[currI + 1][currJ] == 'B' || board[currI + 1][currJ] == 'X'){
-           ;
+         if ((board[currI + direction][currJ] == 'B' || board[currI + direction][currJ] == 'X') && (board[currI + direction][currJ + 1] != 'B' ||  board[currI + direction][currJ + 1] != 'B' )){
+             board[currI][currJ] = ' ';
+             currI = currI + direction;
+             board[currI][currJ] = 'P';
          }
        }
+       if (val == 3){
+          direction = 1;
+         int temp = currJ;
+         board[currI][currJ] = ' ';
+         while (currI > 0 && board[currI + 1][temp] == ' '){
+           temp--;
+         }
+         currI = currI + 1;
+         currJ = temp + 1;
+         board[currI][currJ] = 'P';
+       }
+       drawBoard();
          
      }  
   //}
