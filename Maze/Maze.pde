@@ -8,6 +8,7 @@ int aWidth;
 int aHeight;
 int currI;
 int currJ;
+int direction = -1;
 void setup(){
   frameRate(10);
   //port = new Serial(this, 9600);
@@ -31,14 +32,23 @@ void draw(){
             board[currI][currJ] = ' ';
             currJ = currJ - 1;
           }
-          board[currI][currJ] = 'P'
+          board[currI][currJ] = 'P';
        }
        if (val == 1){
          //temp left
-         if (board[currI - 1][currJ] == ' '){
+         direction = -1;
+         int temp = currJ
+         while (board[currI - 1][temp] == ' '){
            board[currI][currJ] = ' ';
            currI = currI - 1;
-           board[currI][currJ] = 'P';
+           temp--;
+         }
+         board[currI][currJ] = 'P';
+       }
+       if (val == 2){
+         //temp up
+         if (board[currI + 1][currJ] == 'B' || board[currI + 1][currJ] == 'X'){
+           ;
          }
        }
          
