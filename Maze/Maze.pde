@@ -11,10 +11,11 @@ int currJ;
 void setup(){
   frameRate(10);
   //port = new Serial(this, 9600);
-  createBoard();
+  
   textSize(32);
   size(600, 600);
   background(255);
+  createBoard();
 }
 
 void draw(){
@@ -25,8 +26,20 @@ void draw(){
      }
      else{
        if (val == 0){
-         //move down - temp;
-          ;
+         //temp down
+          while (board[currI][currJ - 1] == ' '){
+            board[currI][currJ] = ' ';
+            currJ = currJ - 1;
+          }
+          board[currI][currJ] = 'P'
+       }
+       if (val == 1){
+         //temp left
+         if (board[currI - 1][currJ] == ' '){
+           board[currI][currJ] = ' ';
+           currI = currI - 1;
+           board[currI][currJ] = 'P';
+         }
        }
          
      }  
@@ -36,7 +49,34 @@ void draw(){
 void move(int i, int j, char temp){
   board[i][j] = temp;
 }
-
+void drawBoard(){
+  for (int k = 0; k < board.length; k++){
+     for (int j = 0; j < board[k].length; j++){
+        switch (board[k][j]){
+           case 'X':
+               fill(0, 0, 0);
+               break;
+           case ' ':
+               fill(255, 255, 255);
+               break;
+            case 'G':
+                fill(0, 255, 0);
+                break;
+            case 'P':
+                fill(255, 0, 0);
+                break;
+            case 'B':
+                fill(0, 0, 255);
+                break;
+            default:
+                fill(255, 255, 255);
+                break;
+        }
+        stroke(255, 255, 255);
+       rect(j * width/aWidth, k * width/aWidth, width/aWidth, width/aWidth);
+     }
+   }
+}
 void createBoard(){
    String fileName = "level" + level + ".dat";
    reader = createReader(fileName);
@@ -64,7 +104,6 @@ void createBoard(){
      line = null;
    }
    while (line != null){
-     println(line);
      for (int j = 0; j < board[0].length; j++){
        board[i][j] = line.charAt(j);
      }
@@ -77,32 +116,5 @@ void createBoard(){
      }
    }
    level++;
-   for (int k = 0; k < board.length; k++){
-     for (int j = 0; j < board[k].length; j++){
-       /* switch (board[k][j]){
-           case 'X':
-               fill(0, 0, 0);
-               break;
-           case ' ':
-               fill(255, 255, 255);
-               break;
-            case 'G':
-                fill(0, 255, 0);
-                break;
-            case 'P':
-                fill(255, 0, 0);
-                break;
-            case 'B':
-                fill(0, 0, 255);
-                break;
-            default:
-                fill(255, 255, 255);
-                break;
-        }*/
-        stroke(255, 255, 255);
-        println(width);
-       rect(j * width/aWidth, k * width/aWidth, width/aWidth, width/aWidth);
-     }
-     println();
-   }
+   drawBoard();
 }
