@@ -9,9 +9,10 @@ int aHeight;
 int currI;
 int currJ;
 int direction = -1;
+boolean hasBlock = false;
 void setup(){
   frameRate(10);
-  //port = new Serial(this, 9600);
+  port = new Serial(this, 9600);
   
   textSize(32);
   size(600, 600);
@@ -20,63 +21,57 @@ void setup(){
 }
 
 void draw(){
-  //if (0 < port.available()){
-    // val = port.read();
-     if (board[currI][currJ+1] == 'G'){
-       text("You Win!", 20, 20);
-     }
-     else{
-       if (val == 0){
-         //temp down
-         if (board[currI][currJ + 1] == 'B'){
-           int temp = currJ;
-           while (board[currI + 1][temp] == ' '){
-             temp--;
+  if (0 < port.available()){
+     val = port.read()- '0';
+     println(val);
+       if (val == 0) {
+         if(hasBlock) {
+           if (board[currI-1][currJ+direction] == ' ') {
+             board[currI-1][currJ] = ' ';
+             board[currI-1][currJ+direction] = 'B';
+             gravity('B', currI-1, currJ+direction);
+             hasBlock = false; 
            }
-           board[currI + 1][temp] = 'B';
-         }
-         else if (board[currI + 1][currJ] == 'B'){
-           board[currI][currJ + 1] = 'B';
-         }
-         else {
-           ;
+         } else {
+           if (board[currI][currJ+direction] == 'B') {
+             board[currI][currJ+direction] = ' ';
+             board[currI-1][currJ] = 'B';
+             hasBlock = true; 
+           }
          }
        }
-       if (val == 1){
+       if (val == 1 || val == 3){
          //temp left
-         direction = -1;
+         direction = val == 1 ? -1 : 1;
          int temp = currJ;
-         board[currI][currJ] = ' ';
-         while (currI > 0 && board[currI - 1][temp] == ' '){
-            temp--;
-         }
-         currI = currI - 1;
-         currJ = temp + 1;
-         board[currI][currJ] = 'P';
+         if (board[currI][currJ+direction] == ' '){
+           board[currI][currJ] = ' ';
+           board[currI][currJ+direction] = 'P';
+           gravity('P', currI, currJ+direction);
+           if (hasBlock) {
+             board[currI-1][currJ] = ' ';
+             board[currI-1][currJ+direction] = 'B';
+             gravity('B', currI-1, currJ+direction);
+           }
+         currJ+=direction;
+         } else if (board[currI][currJ+direction] == 'G')
+           won();
        }
        if (val == 2){
          //temp up
-         if ((board[currI + direction][currJ] == 'B' || board[currI + direction][currJ] == 'X') && (board[currI + direction][currJ + 1] != 'B' ||  board[currI + direction][currJ + 1] != 'B' )){
+         if ((board[currI][currJ+direction] == 'B' || board[currI][currJ+direction] == 'X') && (board[currI-1][currJ + direction] != 'B' &&  board[currI-1][currJ + direction] != 'X' )){
              board[currI][currJ] = ' ';
-             currI = currI + direction;
+             currJ = currJ + direction;
+             currI--;
              board[currI][currJ] = 'P';
+             if(hasBlock) {
+               board[currI-1][currJ] = ' ';
+               board[currI-2][currJ+direction] = 'B'; 
+             }
          }
        }
-       if (val == 3){
-          direction = 1;
-         int temp = currJ;
-         board[currI][currJ] = ' ';
-         while (currI > 0 && board[currI + 1][temp] == ' '){
-           temp--;
-         }
-         currI = currI + 1;
-         currJ = temp + 1;
-         board[currI][currJ] = 'P';
-       }
-       drawBoard();
-         
-     }  
-  //}
+       drawBoard(); 
+  }
 }
 
 void move(int i, int j, char temp){
@@ -139,6 +134,10 @@ void createBoard(){
    while (line != null){
      for (int j = 0; j < board[0].length; j++){
        board[i][j] = line.charAt(j);
+       if (board[i][j] == 'P'){
+        currI = i;
+        currJ = j; 
+       }
      }
      i++;
      try{
@@ -150,4 +149,28 @@ void createBoard(){
    }
    level++;
    drawBoard();
+}
+
+void gravity(char block, int r, int c){
+   while (r < board.length-1 && board[r+1][c] == ' '){
+     board[r][c] = ' ';
+     board[r+1][c] = block;
+     r = r+1; 
+   }
+   if (r < board.length-1 && board[r+1][c] == 'G')
+     won();
+   if (block == 'P') {
+     currI = r;
+   }
+}
+
+void won() {
+  background(255);
+  if (level == 5) {
+    text("YOU WIN!!!", 20, 20);
+    noLoop();
+  } else {
+    createBoard();
+  }
+  
 }
