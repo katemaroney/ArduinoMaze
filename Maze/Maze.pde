@@ -47,13 +47,14 @@ void draw(){
          if (board[currI][currJ+direction] == ' '){
            board[currI][currJ] = ' ';
            board[currI][currJ+direction] = 'P';
-           gravity('P', currI, currJ+direction);
            if (hasBlock) {
              board[currI-1][currJ] = ' ';
-             board[currI-1][currJ+direction] = 'B';
-             gravity('B', currI-1, currJ+direction);
            }
-         currJ+=direction;
+           gravity('P', currI, currJ+direction);
+           currJ+=direction;
+           if (hasBlock) {
+             board[currI-1][currJ] = 'B';
+           }
          } else if (board[currI][currJ+direction] == 'G')
            won();
        }
@@ -65,8 +66,8 @@ void draw(){
              currI--;
              board[currI][currJ] = 'P';
              if(hasBlock) {
-               board[currI-1][currJ] = ' ';
-               board[currI-2][currJ+direction] = 'B'; 
+               board[currI][currJ-direction] = ' ';
+               board[currI-1][currJ] = 'B'; 
              }
          }
        }
@@ -102,10 +103,23 @@ void drawBoard(){
         }
         stroke(255, 255, 255);
        rect(j * width/aWidth, k * width/aWidth, width/aWidth, width/aWidth);
+       if (board[k][j] == 'P') {
+         fill(255, 255, 255); 
+         if (direction == -1) {
+           ellipse(j * width/aWidth + (width/aWidth)/5, k * width/aWidth + (width/aWidth)/3, (width/aWidth)/4, (width/aWidth)/8);
+           fill(0, 0, 0);
+           ellipse(j * width/aWidth + (width/aWidth)/5 - ((width/aWidth)/8)/2, k * width/aWidth + (width/aWidth)/3, ((width/aWidth)/4)/3, ((width/aWidth)/4)/3);
+         } else {
+           ellipse((j+1) * width/aWidth - (width/aWidth)/5, k * width/aWidth + (width/aWidth)/3, (width/aWidth)/5, (width/aWidth)/8);   
+           fill(0, 0, 0);
+           ellipse((j+1) * width/aWidth - (width/aWidth)/5 + ((width/aWidth)/8)/2, k * width/aWidth + (width/aWidth)/3, ((width/aWidth)/4)/3, ((width/aWidth)/4)/3); 
+         }
+       }
      }
    }
 }
 void createBoard(){
+  hasBlock = false;
    String fileName = "level" + level + ".dat";
    reader = createReader(fileName);
    String line = "";
@@ -173,4 +187,9 @@ void won() {
     createBoard();
   }
   
+}
+
+void keyPressed() {
+  level--;
+  createBoard();
 }
